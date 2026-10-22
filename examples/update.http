@@ -1,0 +1,5 @@
+PATCH /objects/${id} HTTP/1.1
+Content-Type: application/json
+X-CSRF: ${csrf}
+
+{"value":"changed"}

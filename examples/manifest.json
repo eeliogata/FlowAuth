@@ -1,0 +1,24 @@
+{
+  "base_url": "http://127.0.0.1:8000",
+  "identities": {
+    "owner": {"headers": {"X-Identity": "alice"}},
+    "other": {"headers": {"X-Identity": "bob"}}
+  },
+  "steps": [
+    {"name": "create", "identity": "owner", "request": "create.http", "expect": [201], "capture": {"id": "json:id", "csrf": "header:X-CSRF"}},
+    {"name": "before", "identity": "owner", "request": "read.http", "expect": [200]},
+    {"name": "action", "identity": "other", "request": "update.http"},
+    {"name": "after", "identity": "owner", "request": "read.http", "expect": [200]}
+  ],
+  "check": {
+    "before": "before",
+    "action": "action",
+    "after": "after",
+    "owner_field": "owner",
+    "expected_owner": "alice",
+    "fields": ["value"]
+  },
+  "cleanup": [
+    {"name": "delete", "identity": "owner", "request": "delete.http", "expect": [204]}
+  ]
+}
